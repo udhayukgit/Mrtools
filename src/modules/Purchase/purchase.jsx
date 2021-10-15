@@ -90,14 +90,14 @@ function Purchase() {
                 <label>Purchase Date</label>
                   <div class="input-group date" id="reservationdate" data-target-input="nearest">
                       <input type="text" name="purchase_date" placeholder="Enter Purchase Date" class="form-control datetimepicker-input" data-target="#reservationdate"/>
-                      <input
+                      {/* <input
         defaultValue={intialValues.lastName}
         placeholder="luo"
         {...register("lastName", {
           validate: (value) => value.length > 3
         })}
       />
-      {errors.lastName && <p>Your name is not bill</p>}
+      {errors.lastName && <p>Your name is not bill</p>} */}
                       <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
