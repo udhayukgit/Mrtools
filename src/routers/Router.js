@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 
 import RTHandler from "./RTHandler";
-
 import Login from '../modules/login';
 import Dashboard from '../layouts/Dashboard';
 import ProductList from "../modules/Product/product_list";
