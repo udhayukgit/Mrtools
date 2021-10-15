@@ -1,10 +1,9 @@
 import React from "react";
 import DataTable from 'react-data-table-component';
-import Pagination from 'react-js-pagination'
-import Product from "./product";
+import Purchase from "./purchase";
 
 /**
- * ProductList Component
+ * PurchaseList Component
  */
 
  const data = [{ id: 1, title: 'Conan the Barbarian', year: '1982' }];
@@ -22,7 +21,7 @@ import Product from "./product";
    },
  ];
  
- class ProductList extends React.Component{
+ class PurchaseList extends React.Component{
    render() {
      return (
 
@@ -31,11 +30,11 @@ import Product from "./product";
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-10">
-              <h1>Product List</h1>
+              <h1>Purchase List</h1>
             </div>
             <div class="col-sm-2">
-              <Product />
-             {/* <button  onClick={() => { this.props.history.push("/product") }} type="button" class="btn btn-block btn-primary pull-right">Add Product</button> */}
+             {/* <button  onClick={() => { this.props.history.push("/purchase") }} type="button" class="btn btn-block btn-primary pull-right">Add Purchase</button> */}
+             <Purchase />
              </div>
             <div class="col-sm-3">
               {/* <ol class="breadcrumb float-sm-right">
@@ -73,4 +72,4 @@ import Product from "./product";
  };
 
 
-export default ProductList;
+export default PurchaseList;

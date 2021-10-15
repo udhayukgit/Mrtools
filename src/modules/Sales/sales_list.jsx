@@ -1,10 +1,9 @@
 import React from "react";
 import DataTable from 'react-data-table-component';
-import Pagination from 'react-js-pagination'
-import Product from "./product";
+import Sales from "./sales";
 
 /**
- * ProductList Component
+ * SalesList Component
  */
 
  const data = [{ id: 1, title: 'Conan the Barbarian', year: '1982' }];
@@ -22,7 +21,7 @@ import Product from "./product";
    },
  ];
  
- class ProductList extends React.Component{
+ class SalesList extends React.Component{
    render() {
      return (
 
@@ -31,11 +30,11 @@ import Product from "./product";
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-10">
-              <h1>Product List</h1>
+              <h1>Sales List</h1>
             </div>
             <div class="col-sm-2">
-              <Product />
-             {/* <button  onClick={() => { this.props.history.push("/product") }} type="button" class="btn btn-block btn-primary pull-right">Add Product</button> */}
+             {/* <button  onClick={() => { this.props.history.push("/sales") }} type="button" class="btn btn-block btn-primary pull-right">Add Sales</button> */}
+             <Sales />
              </div>
             <div class="col-sm-3">
               {/* <ol class="breadcrumb float-sm-right">
@@ -61,6 +60,35 @@ import Product from "./product";
                   columns={columns}
                   data={data}
                 />
+                {/* <table id="example2" class="table table-bordered table-hover">
+                  <thead>
+                  <tr>
+                    <th>Rendering engine</th>
+                    <th>Browser</th>
+                    <th>Platform(s)</th>
+                    <th>Engine version</th>
+                    <th>CSS grade</th>
+                  </tr>
+                  </thead>
+                  <tbody>                 
+                  <tr>
+                    <td>Other browsers</td>
+                    <td>All others</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>U</td>
+                  </tr>
+                  </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>Rendering engine</th>
+                    <th>Browser</th>
+                    <th>Platform(s)</th>
+                    <th>Engine version</th>
+                    <th>CSS grade</th>
+                  </tr>
+                  </tfoot>
+                </table> */}
               </div>
             </div>
           </div>
@@ -73,4 +101,4 @@ import Product from "./product";
  };
 
 
-export default ProductList;
+export default SalesList;
