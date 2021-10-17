@@ -13,7 +13,7 @@ class CommonLayout extends React.Component {
     // console.log(this.props);
     return (
       <div class="wrapper">
-      <Header name="yogesh" />
+      <Header {...this.props}/>
       <Menu {...this.props} />
       {React.cloneElement(this.props.children, { ...this.props })} {/*when click link in nav bar*/}
       <Footer {...this.props} />
