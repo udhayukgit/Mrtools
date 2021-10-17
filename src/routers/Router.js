@@ -9,12 +9,15 @@ import {
 } from "react-router-dom";
 
 import RTHandler from "./RTHandler";
+
 import Login from '../modules/login';
 import Dashboard from '../layouts/Dashboard';
 import ProductList from "../modules/Product/product_list";
-import Product from "../modules/Product/create_product";
-import StockList from "../modules/Stock/stock_list";
-import Stock from "../modules/Stock/create_stock";
+import Product from "../modules/Product/product";
+import PurchaseList from "../modules/Purchase/purchase_list";
+import Purchase from "../modules/Purchase/purchase";
+import SalesList from "../modules/Sales/sales_list";
+
 
 /**
  * Parent App component with routing
@@ -33,24 +36,19 @@ const AppRoute = () => {
           />
         <RTHandler
           exact
-          path="/create_product"
-          component={Product} 
-          />
-        <RTHandler
-          exact
           path="/product_list"
           component={ProductList}
         />  
         <RTHandler
           exact
-          path="/create_stock"
-          component={Stock} 
-          />
+          path="/purchase_list"
+          component={PurchaseList}
+        />
         <RTHandler
           exact
-          path="/stock_list"
-          component={StockList}
-        >  
+          path="/sales_list"
+          component={SalesList}
+        >   
         </RTHandler>
     </Router>
   );
