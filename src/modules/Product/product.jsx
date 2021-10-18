@@ -21,7 +21,7 @@ function Product() {
       
       e.preventDefault()
       setLoading(true)
-      axios.post('/api/add_product', {
+      axios.post('http://localhost:5000/api/add_product', {
           name: product_name,
       }).then(result => {
           localStorage.setItem('token', result.data.token)

@@ -6,18 +6,29 @@ import Footer from '../layouts/Footer';
 class CommonLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isLoggedIn: true
+    };
   }
 
   render() {
-    // console.log(this.props);
+    const renderComponent = () => {
+      if (this.props.location.pathname!='/login') {
+        return (
+          <React.Fragment>
+            <Header {...this.props}/>
+            <Menu {...this.props}/>
+          </React.Fragment>
+        )
+      }
+    }
+    // console.log(isLoggedIn);
     return (
       <div class="wrapper">
-      <Header {...this.props}/>
-      <Menu {...this.props} />
-      {React.cloneElement(this.props.children, { ...this.props })} {/*when click link in nav bar*/}
-      <Footer {...this.props} />
-    </div>
+        {renderComponent()}
+        {React.cloneElement(this.props.children, { ...this.props })} {/*when click link in nav bar*/}
+        <Footer {...this.props} />
+      </div>
     );
   }
 }

@@ -7,6 +7,7 @@ import {
   useRouteMatch,
   useParams
 } from "react-router-dom";
+import { Redirect } from 'react-router';
 
 import RTHandler from "./RTHandler";
 
@@ -26,30 +27,33 @@ const AppRoute = () => {
   return (
 
     <Router basename="/">
-      <Route path="/login">
-      <Login />
-      </Route>
-        <RTHandler
-          exact
-          path="/dashboard"
-          component={Dashboard} 
-          />
-        <RTHandler
-          exact
-          path="/product_list"
-          component={ProductList}
-        />  
-        <RTHandler
-          exact
-          path="/purchase_list"
-          component={PurchaseList}
+      <Redirect exact from="/" to="login" />
+      <RTHandler
+        exact
+        path="/login"
+        component={Login} 
         />
-        <RTHandler
-          exact
-          path="/sales_list"
-          component={SalesList}
-        >   
-        </RTHandler>
+      <RTHandler
+        exact
+        path="/dashboard"
+        component={Dashboard} 
+        />
+      <RTHandler
+        exact
+        path="/product_list"
+        component={ProductList}
+      />  
+      <RTHandler
+        exact
+        path="/purchase_list"
+        component={PurchaseList}
+      />
+      <RTHandler
+        exact
+        path="/sales_list"
+        component={SalesList}
+      >   
+      </RTHandler>
     </Router>
   );
 };

@@ -31,6 +31,7 @@ class Login extends React.Component {
   }
 
   onContinue = (e)=>{
+    this.props.history.push('/dashboard')
     console.log(e);
       this.setState({ submitted: true });
 
