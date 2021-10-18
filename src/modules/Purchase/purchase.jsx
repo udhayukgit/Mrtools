@@ -4,23 +4,8 @@ import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Alert from 'react-bootstrap/Alert'
 import Spinner from 'react-bootstrap/Spinner'
-import { useForm } from "react-hook-form";
 
 function Purchase() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm();
-  const intialValues = {
-    // firstName: "bill",
-    lastName: "",
-    // email: "bluebill1049@hotmail.com",
-    // age: -1
-  };
-  const onSubmit = (data) => {
-    alert(JSON.stringify(data));
-  };
   const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
   const [purchaseDate, setPurchaseDate] = useState('')
@@ -36,26 +21,26 @@ function Purchase() {
       setShow(true)
   }
 
-  // function handleSubmit(e) {
+  function handleSubmit(e) {
       
-  //     e.preventDefault()
-  //     setLoading(true)
-  //     axios.post('/api/register', {
-  //         purchase_date: purchaseDate,
-  //         purchase_product: purchaseProduct,
-  //         purchase_quantity: purchaseQuantity,
-  //         purchase_price: purchasePrice,
-  //         purchase_total: purchaseTotal,
+      e.preventDefault()
+      setLoading(true)
+      axios.post('/api/register', {
+          purchase_date: purchaseDate,
+          purchase_product: purchaseProduct,
+          purchase_quantity: purchaseQuantity,
+          purchase_price: purchasePrice,
+          purchase_total: purchaseTotal,
           
-  //     }).then(result => {
-  //         localStorage.setItem('token', result.data.token)
-  //         // props.addUser(result.data.user)
-  //     }).catch(err => {
-  //         setErrorKeys(Object.keys(JSON.parse(err.response.data)))
-  //         setError(JSON.parse(err.response.data))
-  //         setLoading(false)
-  //     })
-  // }
+      }).then(result => {
+          localStorage.setItem('token', result.data.token)
+          // props.addUser(result.data.user)
+      }).catch(err => {
+          setErrorKeys(Object.keys(JSON.parse(err.response.data)))
+          setError(JSON.parse(err.response.data))
+          setLoading(false)
+      })
+  }
 
   function handleChange(e) {
       if(e.target.name == 'purchase_date')
@@ -83,21 +68,13 @@ function Purchase() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit}>
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
                 <label>Purchase Date</label>
                   <div class="input-group date" id="reservationdate" data-target-input="nearest">
                       <input type="text" name="purchase_date" placeholder="Enter Purchase Date" class="form-control datetimepicker-input" data-target="#reservationdate"/>
-                      {/* <input
-        defaultValue={intialValues.lastName}
-        placeholder="luo"
-        {...register("lastName", {
-          validate: (value) => value.length > 3
-        })}
-      />
-      {errors.lastName && <p>Your name is not bill</p>} */}
                       <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -147,8 +124,6 @@ function Purchase() {
           <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-
-            <input type="submit" />
             <button type="submit" className="submit btn btn-primary">
               { loading ?
                   <div className="align-middle">

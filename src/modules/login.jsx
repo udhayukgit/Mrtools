@@ -1,4 +1,7 @@
 import React from "react";
+import axios from 'axios'
+import { Link, Redirect } from 'react-router-dom';
+import Dashboard from "../layouts/Dashboard";
 import { ToastAlert } from '../utils/sweetalert2';
 
 /**
@@ -19,10 +22,6 @@ class Login extends React.Component {
       this.setState({ [e.target.name]: e.target.value })
   }
 
-  // onFileChange = (e) => {
-  //     this.setState({ profile_pic: URL.createObjectURL(e.target.files[0])})
-  // };
-
   onCancel = (e)=>{
       this.setState({ 
           email_id: '',
@@ -32,6 +31,7 @@ class Login extends React.Component {
   }
 
   onContinue = (e)=>{
+    this.props.history.push('/dashboard')
     console.log(e);
       this.setState({ submitted: true });
 
@@ -39,9 +39,21 @@ class Login extends React.Component {
 
       if (!email_id || !password) {
           return;
-      } else {
-          this.onCancel();
-          ToastAlert('success', "Submitted Successfully");
+      } 
+      else {
+      axios.post('/api/login', {
+        email: email_id,
+        password: password
+      }).then(result => {
+        localStorage.setItem('token', result.data.token)
+        // props.addUser(result.data.user)
+      }).catch(error => {
+        // setError(true)
+        // setLoading(false)
+      })
+        // this.onCancel();
+        // return <Dashboard {...props} />
+        // ToastAlert('success', "Login Success");
       }
   }
 	
@@ -66,7 +78,7 @@ class Login extends React.Component {
 
               {/* <form action="" method="post"> */}
                 <div class="input-group mb-3">
-                  <input type="email" name="email_id"class={"form-control " + ((submitted && !email_id) ? "is-invalid" : "")} placeholder="Email" onChange={this.onChange} />
+                  <input type="email" name="email_id" class={"form-control " + ((submitted && !email_id) ? "is-invalid" : "")} placeholder="Email" onChange={this.onChange} />
                   {submitted && !email_id && (
                   <span id="email-error" className="error invalid-feedback" >Email id is Required</span>
                   )}

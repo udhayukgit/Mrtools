@@ -48,11 +48,20 @@ render() {
                       </a>
                     </li>
                     <li class="nav-item">
-                    <a className={(this.props.location.pathname.includes('/stock')) ? "nav-link active" : "nav-link"}
-                    onClick={() => { this.props.history.push("/stock_list") }}>
+                    <a className={(this.props.location.pathname.includes('/purchase')) ? "nav-link active" : "nav-link"}
+                    onClick={() => { this.props.history.push("/purchase_list") }}>
                         <i class="nav-icon fas fa-table"></i>
                         <p>
-                          Stocks
+                          Purchase
+                        </p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                    <a className={(this.props.location.pathname.includes('/sales')) ? "nav-link active" : "nav-link"}
+                    onClick={() => { this.props.history.push("/sales_list") }}>
+                        <i class="nav-icon fas fa-table"></i>
+                        <p>
+                          Sales
                         </p>
                       </a>
                     </li>

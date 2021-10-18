@@ -14,7 +14,7 @@ function Sales() {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        Add Purchase
+        Add Sales
       </Button>
 
       <Modal show={show} onHide={handleClose} animation={false}>
@@ -28,9 +28,9 @@ function Sales() {
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                <label>Purchase Date</label>
+                <label>Sales Date</label>
                   <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                      <input type="text" name="sales_date" placeholder="Enter Purchase Date" class="form-control datetimepicker-input" data-target="#reservationdate"/>
+                      <input type="text" name="sales_date" placeholder="Enter Sales Date" class="form-control datetimepicker-input" data-target="#reservationdate"/>
                       <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                           <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                       </div>
@@ -41,8 +41,8 @@ function Sales() {
             <div class="row">
               <div class="col-sm-12">
                 <div class="form-group">
-                  <label>Select Purchase Product</label>
-                  <select class="form-control" name="purchase_product">
+                  <label>Select Sales Product</label>
+                  <select class="form-control" name="sales_product">
                     <option>option 1</option>
                     <option>option 2</option>
                     <option>option 3</option>
@@ -56,7 +56,7 @@ function Sales() {
               <div class="col-sm-12">
                 <div class="form-group">
                   <label>Quantity</label>
-                  <input type="number" name="purchase_quantity" class="form-control" placeholder="Enter Quantity"/>
+                  <input type="number" name="sales_quantity" class="form-control" placeholder="Enter Quantity"/>
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@ function Sales() {
               <div class="col-sm-12">
                 <div class="form-group">
                   <label>Purchase Price</label>
-                  <input type="number" name="purchase_price" class="form-control" placeholder="Enter Purchase Price"/>
+                  <input type="number" name="sales_price" class="form-control" placeholder="Enter Purchase Price"/>
                 </div>
               </div>
             </div>
@@ -72,7 +72,7 @@ function Sales() {
               <div class="col-sm-12">
                 <div class="form-group">
                   <label>Total</label>
-                  <input type="number" name="purchase_total" class="form-control" placeholder=""/>
+                  <input type="number" name="sales_total" class="form-control" placeholder=""/>
                 </div>
               </div>
             </div>
