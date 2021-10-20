@@ -1,6 +1,5 @@
 import React from "react";
 import DataTable from 'react-data-table-component';
-import Pagination from 'react-js-pagination'
 import Product from "./product";
 
 /**
@@ -22,18 +21,7 @@ import Product from "./product";
    },
  ];
  
-
  class ProductList extends React.Component{
-
-  componentDidMount() {
-    axios.get(`http://127.0.0.1:8000/product/`)
-      .then(res => {
-        const persons = res.data;
-        this.setState({ persons });
-      })
-  }
-
-
    render() {
      return (
 
@@ -45,8 +33,8 @@ import Product from "./product";
               <h1>Product List</h1>
             </div>
             <div class="col-sm-2">
-              <Product />
-             {/* <button  onClick={() => { this.props.history.push("/product") }} type="button" class="btn btn-block btn-primary pull-right">Add Product</button> */}
+             {/* <button  onClick={() => { this.props.history.push("/purchase") }} type="button" class="btn btn-block btn-primary pull-right">Add Purchase</button> */}
+             <Product />
              </div>
             <div class="col-sm-3">
               {/* <ol class="breadcrumb float-sm-right">
