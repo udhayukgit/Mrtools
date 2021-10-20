@@ -1,91 +1,60 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-import Modal from 'react-bootstrap/Modal'
-import Button from 'react-bootstrap/Button'
-import Alert from 'react-bootstrap/Alert'
-import Spinner from 'react-bootstrap/Spinner'
+import React from 'react'
+import { ReactReduxContext } from 'react-redux';
+import { Field, reduxForm } from 'redux-form'
 
-function Product() {
-  const [show, setShow] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [product_name, setName] = useState('')
-  const [errorKeys, setErrorKeys] = useState([])
-  const [error, setError] = useState([])
-  const handleClose = () => setShow(false)
-  
-  const handleShow = () => {
-      setShow(true)
-  }
+const required = value => value ? undefined : 'Required'
+const maxLength = max => value =>
+  value && value.length > max ? `Must be ${max} characters or less` : undefined
+const maxLength15 = maxLength(15)
+const number = value => value && isNaN(Number(value)) ? 'Must be a number' : undefined
+const minValue = min => value =>
+  value && value < min ? `Must be at least ${min}` : undefined
+const minValue18 = minValue(18)
+const email = value =>
+  value && !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value) ?
+  'Invalid email address' : undefined
+const tooOld = value =>
+  value && value > 65 ? 'You might be too old for this' : undefined
+const aol = value =>
+  value && /.+@aol\.com/.test(value) ?
+  'Really? You still use AOL for your email?' : undefined
 
-  function handleSubmit(e) {
-      
-      e.preventDefault()
-      setLoading(true)
-      axios.post('http://localhost:5000/api/add_product', {
-          name: product_name,
-      }).then(result => {
-          localStorage.setItem('token', result.data.token)
-          // props.addUser(result.data.user)
-      }).catch(err => {
-          setErrorKeys(Object.keys(JSON.parse(err.response.data)))
-          setError(JSON.parse(err.response.data))
-          setLoading(false)
-      })
-  }
+const renderField = ({ input, label, type, meta: { touched, error, warning } }) => (
+  <div>
+    <label>{label}</label>
+    <div>
+      <input {...input} placeholder={label} type={type}/>
+      {touched && ((error && <span>{error}</span>) || (warning && <span>{warning}</span>))}
+    </div>
+  </div>
+)
 
-  function handleChange(e) {
-    if(e.target.name == 'product_name')
-        setName(e.target.value) 
-  }
-
+const FieldLevelValidationForm = (props) => {
+  const { handleSubmit, pristine, reset, submitting } = props
   return (
-    <>
-      <Button variant="primary" onClick={handleShow}>
-        Add Product
-      </Button>
-
-      <Modal show={show} onHide={handleClose} animation={false}>
-        <Modal.Header closeButton>
-          <Modal.Title className="auth-title">
-          Product Form
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handleSubmit}>
-            <div class="row">
-              <div class="col-sm-12">
-                <div class="form-group">
-                  <label>Product Name</label>
-                  <input type="text" name="product_name" class="form-control" placeholder="Enter Product Name" onChange={handleChange}/>
-                </div>
-              </div>
-            </div>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <button type="submit" className="submit btn btn-primary">
-              { loading ?
-                  <div className="align-middle">
-                      <Spinner
-                          as="span"
-                          animation="grow"
-                          size="sm"
-                          role="status"
-                          aria-hidden="true"
-                      />
-                      <span>Saving...</span>
-                  </div>
-                  :
-                  <span>save</span>}
-              </button>
-          </Modal.Footer>
-          </form>
-        </Modal.Body>
-      </Modal>
-    </>
-  );
+    <form onSubmit={handleSubmit}>
+      <Field name="username" type="text"
+        component={renderField} label="Username"
+        validate={[ required, maxLength15 ]}
+      />
+      <Field name="email" type="email"
+        component={renderField} label="Email"
+        validate={email}
+        warn={aol}
+      />
+      <Field name="age" type="number"
+        component={renderField} label="Age"
+        validate={[ required, number, minValue18 ]}
+        warn={tooOld}
+      />
+      <div>
+        <button type="submit" disabled={submitting}>Submit</button>
+        <button type="button" disabled={pristine || submitting} onClick={reset}>Clear Values</button>
+      </div>
+    </form>
+  )
 }
 
-export default Product
-
+export default reduxForm({
+  form: 'fieldLevelValidation' // a unique identifier for this form
+})(FieldLevelValidationForm)

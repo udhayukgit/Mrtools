@@ -22,7 +22,18 @@ import Product from "./product";
    },
  ];
  
+
  class ProductList extends React.Component{
+
+  componentDidMount() {
+    axios.get(`http://127.0.0.1:8000/product/`)
+      .then(res => {
+        const persons = res.data;
+        this.setState({ persons });
+      })
+  }
+
+
    render() {
      return (
 
