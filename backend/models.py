@@ -3,7 +3,7 @@ from datetime import date
 import datetime
 import json
 import os,time
-
+from bson import ObjectId
 
 db = DBconfig()
 
@@ -18,7 +18,10 @@ class User(db.Document):
 
 
     def to_json(self):
-        return {"username": self.username,
+        uid = str(self.id)
+        return {
+                "id":uid,
+                "username": self.username,
                 "password":self.password,
                 "email": self.email,
                  "created_at":self.created_at,
@@ -34,7 +37,10 @@ class Product(db.Document):
 
 
     def to_json(self):
-        return {"productname": self.productname,
+        pid = str(self.id)
+        return {
+                "id": pid,
+                "productname": self.productname,
                  "created_at":self.created_at,
                  "updated_at":self.updated_at
 
@@ -53,7 +59,10 @@ class Stock(db.Document):
 
 
     def to_json(self):
-        return {"productname": self.productname,
+        sid = str(self.id)
+        return {
+                "sid":sid,
+                "productname": self.productname,
                  "created_at":self.created_at,
                  "updated_at":self.updated_at
 
@@ -73,7 +82,10 @@ class Sales(db.Document):
 
 
     def to_json(self):
-        return {"productname": self.productname,
+        salesid = str(self.id)
+        return {
+                "sales_id":salesid,
+                "productname": self.productname,
                  "created_at":self.created_at,
                  "updated_at":self.updated_at
 
