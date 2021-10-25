@@ -8,6 +8,8 @@ import datetime
 from werkzeug.utils import secure_filename
 from usermanagement import UserManagement,login
 from product import ProductManagement
+from stock import Stock
+from sales import Sales
 
 app = Flask(__name__)
 api = Api(app)
@@ -17,6 +19,8 @@ app.url_map.strict_slashes = False
 api.add_resource(login, '/')
 api.add_resource(UserManagement, '/user')
 api.add_resource(ProductManagement, '/product')
+api.add_resource(Stock, '/stocks')
+api.add_resource(Sales, '/sales')
 
 if __name__ == "__main__":
     app.run(debug=True,host='0.0.0.0',port=8000)

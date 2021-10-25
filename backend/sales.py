@@ -32,7 +32,12 @@ class Sales(Resource):
     page = 1
     limit = 10
     
-    getsales = sales.objects(status=1).paginate(page=page,per_page=limit)
+    try:
+        getsales = Sales.objects(status=1).paginate(page=page,per_page=limit)
+    except Exception as e:
+        
+        return jsonify({'error': " Sales Object Doesn't exsist"})
+    
     if not getsales:
         return jsonify({'error': 'data not found'})
     else:
@@ -52,7 +57,7 @@ class Sales(Resource):
     
     sales = request.form #sales form
     
-    productname_exist = sales.objects(productname=sales['productname']).first()
+    productname_exist = Sales.objects(productname=sales['productname']).first()
 
     if productname_exist:
         return jsonify({'status': 'failed','messgage':'productname Already exsist, Please try different!.'})
@@ -68,57 +73,57 @@ class Sales(Resource):
                 created_at = created_at,
                 updated_at = created_at,
                 status=1)
-    sales.save()
+    Sales.save()
 
     return jsonify({'status': 'success','messgage':'sales created Successfully!.'})
 
 
-    def put(self):
+  def put(self):
 
-        """Update the sales for using this function
+    """Update the sales for using this function
 
-        Returns
-        -------
-        json
-            a status of function return json format
-        """
+    Returns
+    -------
+    json
+        a status of function return json format
+    """
+
+    sales = request.form
+
+    if 'id' not in sales:
+        return jsonify({'error':"Id is must to Edit the data!."})
+
+    record = Sales.objects(id=sales['id']).first()
+
+
+    if not record:
+        return jsonify({'status': 'failed','error': 'sales not found'})
+    else:
         
-        sales = request.form
-        
-        if 'productname' not in sales:
-            return jsonify({'error':"productname is must to Edit the data!."})
+        record.update(updated_at=datetime.datetime.now(), **sales)
+        record = Sales.objects(productname=sales['productname']).first()
 
-        record = sales.objects(productname=sales['productname']).first()
-
-        
-        if not record:
-            return jsonify({'status': 'failed','error': 'sales not found'})
-        else:
-            
-            record.update(updated_at=datetime.datetime.now(), **sales)
-            record = sales.objects(productname=sales['productname']).first()
-        
-        return jsonify({'status': 'success','messgage':'sales data Updated Successfully!.'})
+    return jsonify({'status': 'success','messgage':'sales data Updated Successfully!.'})
 
 
-    def delete(self):
-        """Deleting the sales for using this function
+  def delete(self):
+    """Deleting the sales for using this function
 
-        Returns
-        -------
-        json
-            a status of function return json format
-        """
+    Returns
+    -------
+    json
+        a status of function return json format
+    """
 
-        
-        sales = request.form
+    
+    sales = request.form
 
-        if 'productname' not in sales:
-            return jsonify({'error':"productname is Must to Delete the data!."})
+    if 'id' not in sales:
+        return jsonify({'error':"productname is Must to Delete the data!."})
 
-        sales = sales.objects(productname=sales['productname']).first()
-        if not sales:
-            return jsonify({'status': 'failed','error': 'data not found'})
-        else:
-            sales.update(status=2)
-        return jsonify({'status':'success',"message":"sales Deleted Successfully!."})
+    sales = Sales.objects(id=sales['id']).first()
+    if not sales:
+        return jsonify({'status': 'failed','error': 'data not found'})
+    else:
+        Sales.update(status=2)
+    return jsonify({'status':'success',"message":"sales Deleted Successfully!."})

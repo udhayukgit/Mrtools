@@ -32,7 +32,11 @@ class Stock(Resource):
     page = 1
     limit = 10
     
-    stocks = stock.objects(status=1).paginate(page=page,per_page=limit)
+    try:
+        stocks = Stocks.objects(status=1).paginate(page=page,per_page=limit)
+    except Exception as e:
+        
+        return jsonify({'error': " Sales Object Doesn't exsist"})
     if not stocks:
         return jsonify({'error': 'data not found'})
     else:
@@ -52,7 +56,7 @@ class Stock(Resource):
     
     stock = request.form #stock form
     
-    productname_exist = stock.objects(productname=stock['productname']).first()
+    productname_exist = Stock.objects(productname=stock['productname']).first()
 
     if productname_exist:
         return jsonify({'status': 'failed','messgage':'productname Already exsist, Please try different!.'})
@@ -67,57 +71,57 @@ class Stock(Resource):
                 created_at = created_at,
                 updated_at = created_at,
                 status=1)
-    stock.save()
+    Stock.save()
 
     return jsonify({'status': 'success','messgage':'stock created Successfully!.'})
 
 
-    def put(self):
+  def put(self):
 
-        """Update the stock for using this function
+    """Update the stock for using this function
 
-        Returns
-        -------
-        json
-            a status of function return json format
-        """
+    Returns
+    -------
+    json
+        a status of function return json format
+    """
+    
+    stock = request.form
+    
+    if 'id' not in stock:
+        return jsonify({'error':"productname is must to Edit the data!."})
+
+    record = Stock.objects(id=stock['id']).first()
+
+    
+    if not record:
+        return jsonify({'status': 'failed','error': 'stock not found'})
+    else:
         
-        stock = request.form
-        
-        if 'productname' not in stock:
-            return jsonify({'error':"productname is must to Edit the data!."})
-
-        record = stock.objects(productname=stock['productname']).first()
-
-        
-        if not record:
-            return jsonify({'status': 'failed','error': 'stock not found'})
-        else:
-            
-            record.update(updated_at=datetime.datetime.now(), **stock)
-            record = stock.objects(productname=stock['productname']).first()
-        
-        return jsonify({'status': 'success','messgage':'stock data Updated Successfully!.'})
+        record.update(updated_at=datetime.datetime.now(), **stock)
+        record = Stock.objects(id=stock['id']).first()
+    
+    return jsonify({'status': 'success','messgage':'stock data Updated Successfully!.'})
 
 
-    def delete(self):
-        """Deleting the stock for using this function
+  def delete(self):
+    """Deleting the stock for using this function
 
-        Returns
-        -------
-        json
-            a status of function return json format
-        """
+    Returns
+    -------
+    json
+        a status of function return json format
+    """
 
-        
-        stock = request.form
+    
+    stock = request.form
 
-        if 'productname' not in stock:
-            return jsonify({'error':"productname is Must to Delete the data!."})
+    if 'id' not in stock:
+        return jsonify({'error':"productname is Must to Delete the data!."})
 
-        stock = stock.objects(productname=stock['productname']).first()
-        if not stock:
-            return jsonify({'status': 'failed','error': 'data not found'})
-        else:
-            stock.update(status=2)
-        return jsonify({'status':'success',"message":"stock Deleted Successfully!."})
+    stock = Stock.objects(id=stock['id']).first()
+    if not stock:
+        return jsonify({'status': 'failed','error': 'data not found'})
+    else:
+        Stock.update(status=2)
+    return jsonify({'status':'success',"message":"stock Deleted Successfully!."})
