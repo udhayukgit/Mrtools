@@ -1,3 +1,3 @@
 npm start &
 cd backend
-python app.py
+python3 app.py
