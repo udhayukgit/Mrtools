@@ -2,16 +2,10 @@ import React from "react";
 import Header from '../layouts/Header';
 import Menu from '../layouts/Menu';
 import Footer from '../layouts/Footer';
-import { createStore, combineReducers } from 'redux'
-import { reducer as formReducer } from 'redux-form'
-import { Provider } from 'react-redux'
-
-const reducers = {
-  // ... your other reducers here ...
-  form: formReducer     // <---- Mounted at 'form'
-}
-const reducer = combineReducers(reducers)
-const store = createStore(reducer)
+import { Provider } from "react-redux";
+import store from "../store";
+import showResults from "../showResults";
+import Product from "../modules/Product/product";
 
 class CommonLayout extends React.Component {
   constructor(props) {
@@ -35,8 +29,9 @@ class CommonLayout extends React.Component {
     // console.log(isLoggedIn);
     return (
       <div class="wrapper">
-          <Provider store={store}>
+        <Provider store={store}>
         {renderComponent()}
+        {/* <Product onSubmit={showResults} /> */}
         {React.cloneElement(this.props.children, { ...this.props })} {/*when click link in nav bar*/}
         <Footer {...this.props} />
         </Provider>
