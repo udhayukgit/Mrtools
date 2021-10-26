@@ -185,7 +185,7 @@
 # if __name__ == "__main__":
 #     app.run(debug=True,host='0.0.0.0',port=8000)
 
-from flask import Flask, request,jsonify
+from flask import Flask, request,jsonify,make_response
 from flask_restful import Api, Resource, reqparse
 from db import DBconfig
 from datetime import date
@@ -194,9 +194,40 @@ import json
 import os,time
 from werkzeug.utils import secure_filename
 
+from werkzeug.security import generate_password_hash, check_password_hash
+import uuid
+import jwt
+from functools import wraps
+
 from models import User
 
 
+app = Flask(__name__)
+app.config['SECRET_KEY']='Th1s1ss3cr3t'
+
+def token_required(f):
+   @wraps(f)
+   def decorator(*args, **kwargs):
+
+      token = None
+
+      if 'x-access-tokens' in request.headers:
+         token = request.headers['x-access-tokens']
+
+      if not token:
+         return jsonify({'message': 'a valid token is missing'})
+
+
+      try:
+         data = jwt.decode(token, app.config['SECRET_KEY'])
+         print(data)
+         current_user = User.objects(public_id=data['public_id']).first()
+      except Exception as e:
+         print(e)
+         return jsonify({'message': 'token is invalid'})
+
+      return f(current_user, *args, **kwargs)
+   return decorator
 
 class login(Resource):
 
@@ -215,25 +246,42 @@ class login(Resource):
 
     def post(self):
     
-        user = request.form #user form
+        # user = request.form #user form
         
         
-        logged_in_at = datetime.datetime.now()  #last login date update(recently login date)
-        print(logged_in_at)
+        # logged_in_at = datetime.datetime.now()  #last login date update(recently login date)
+        
 
-        record = User.objects(username=user['username'],password=user['password']).count()
+        # record = User.objects(username=user['username'],password=user['password']).count()
 
-        if record:
-            record.update(last_login=logged_in_at) #update last login
-            status , message = 'success','User created Successfully!.'
-        else:
-            status , message = 'failed', 'Invalid Credentials Username or Password!.'
+        # if record:
+        #     record.update(last_login=logged_in_at) #update last login
+        #     status , message = 'success','User created Successfully!.'
+        # else:
+        #     status , message = 'failed', 'Invalid Credentials Username or Password!.'
         
-        return jsonify({'status': status,'messgage':message})
+        # return jsonify({'status': status,'messgage':message})
+
+
+        auth = request.authorization   
+
+        if not auth or not auth.username or not auth.password:  
+           return make_response('could not verify', 401, {'WWW.Authentication': 'Basic realm: "login required"'})    
+
+        user = User.objects(username=auth.username).first()   
+             
+        if check_password_hash(user.password, auth.password):  
+            token = jwt.encode({'public_id': user.public_id, 'exp' : datetime.datetime.utcnow() + datetime.timedelta(minutes=30)}, app.config['SECRET_KEY'])  
+            #return jsonify({'token' : token.decode('UTF-8')})
+            return jsonify({'token' : token}) 
+
+        return make_response('could not verify',  401, {'WWW.Authentication': 'Basic realm: "login required"'})
 
 
 
 class UserManagement(Resource):
+
+  @token_required
   def get(self):
     """Get the user details for using this function
 
@@ -271,9 +319,12 @@ class UserManagement(Resource):
     """
 
     user_flag , email_flag = False , False
+
     
     user = request.form #user form
     
+    hashed_password = generate_password_hash(user['password'], method='sha256')
+
     username_exist = User.objects(username=user['username']).first()
 
     if username_exist:
@@ -286,11 +337,15 @@ class UserManagement(Resource):
 
     created_at = datetime.datetime.now()
     
-    user = User(username = user['username'],
+
+    #new_user = Users(public_id=str(uuid.uuid4()), name=data['name'], password=hashed_password, admin=False) 
+    user = User(
+                public_id=str(uuid.uuid4()),
+                username = user['username'],
                 email = user['email'],
-                password = user['password'],
+                password = hashed_password,
                 created_at = created_at,
-                updated_at = '',
+                updated_at = created_at,
                 status=1)
     user.save()
 

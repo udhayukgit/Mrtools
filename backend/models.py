@@ -9,6 +9,7 @@ db = DBconfig()
 
 #User Model
 class User(db.Document):
+    public_id = db.StringField()
     username = db.StringField()
     password = db.StringField()
     email = db.StringField()
@@ -20,6 +21,7 @@ class User(db.Document):
     def to_json(self):
         uid = str(self.id)
         return {
+                "public_id":self.public_id,
                 "id":uid,
                 "username": self.username,
                 "password":self.password,
