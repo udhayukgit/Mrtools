@@ -1,71 +1,87 @@
-import React from "react";
-import axios from 'axios'
-import { Link, Redirect } from 'react-router-dom';
-import Dashboard from "../layouts/Dashboard";
-import { ToastAlert } from '../utils/sweetalert2';
+import React, { Component } from "react";
+import { Redirect } from 'react-router-dom';
 
-/**
- * Stock Component
- */
-class Login extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-            email_id: '',
-            password:'',
-            submitted: false,
-		};
-	}
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import CheckButton from "react-validation/build/button";
 
-  onChange = (e) => {
-    console.log(e);
-      this.setState({ [e.target.name]: e.target.value })
+import { connect } from "react-redux";
+import { login } from "../actions/auth";
+
+const required = (value) => {
+  if (!value) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        This field is required!
+      </div>
+    );
+  }
+};
+
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.handleLogin = this.handleLogin.bind(this);
+    this.onChangeUsername = this.onChangeUsername.bind(this);
+    this.onChangePassword = this.onChangePassword.bind(this);
+
+    this.state = {
+      username: "",
+      password: "",
+      loading: false,
+    };
   }
 
-  onCancel = (e)=>{
-      this.setState({ 
-          email_id: '',
-          password:'',
-          submitted: false,
-      })
+  onChangeUsername(e) {
+    this.setState({
+      username: e.target.value,
+    });
   }
 
-  onContinue = (e)=>{
-    this.props.history.push('/dashboard')
-    console.log(e);
-      this.setState({ submitted: true });
-
-      const { email_id, password } = this.state;
-
-      if (!email_id || !password) {
-          return;
-      } 
-      else {
-      axios.post('/api/login', {
-        email: email_id,
-        password: password
-      }).then(result => {
-        localStorage.setItem('token', result.data.token)
-        // props.addUser(result.data.user)
-      }).catch(error => {
-        // setError(true)
-        // setLoading(false)
-      })
-        // this.onCancel();
-        // return <Dashboard {...props} />
-        // ToastAlert('success', "Login Success");
-      }
+  onChangePassword(e) {
+    this.setState({
+      password: e.target.value,
+    });
   }
-	
 
-    /**
-     * main render
-     * @returns 
-     */
-	render() {
-    const { email_id, password, submitted } = this.state;
-		return (
-      
+  handleLogin(e) {
+    e.preventDefault();
+
+    this.setState({
+      loading: true,
+    });
+
+    this.form.validateAll();
+
+    const { dispatch, history } = this.props;
+
+    if (this.checkBtn.context._errors.length === 0) {
+      dispatch(login(this.state.username, this.state.password))
+        .then(() => {
+          history.push("/dashboard");
+          window.location.reload();
+        })
+        .catch(() => {
+          this.setState({
+            loading: false
+          });
+        });
+    } else {
+      this.setState({
+        loading: false,
+      });
+    }
+  }
+
+  render() {
+    const { isLoggedIn, message } = this.props;
+
+    if (isLoggedIn) {
+      return <Redirect to="/profile" />;
+    }
+
+    return (
+
       <body class="hold-transition login-page">
         <div class="login-box">
           <div class="login-logo">
@@ -76,29 +92,34 @@ class Login extends React.Component {
             <div class="card-body login-card-body">
               <p class="login-box-msg">Sign in to start your session</p>
 
-              {/* <form action="" method="post"> */}
+                <Form
+                onSubmit={this.handleLogin}
+                ref={(c) => {
+                this.form = c;
+                }}
+                >
                 <div class="input-group mb-3">
-                  <input type="email" name="email_id" class={"form-control " + ((submitted && !email_id) ? "is-invalid" : "")} placeholder="Email" onChange={this.onChange} />
-                  {submitted && !email_id && (
-                  <span id="email-error" className="error invalid-feedback" >Email id is Required</span>
-                  )}
-                  <div class="input-group-append">
-                    <div class="input-group-text">
-                      <span class="fas fa-envelope"></span>
-                    </div>
-                  </div>
+                  <Input
+                  type="text"
+                  className="form-control"
+                  name="username"
+                  value={this.state.username}
+                  onChange={this.onChangeUsername}
+                  validations={[required]}
+                  />
                 </div>
+
                 <div class="input-group mb-3">
-                  <input type="password" name="password" class={"form-control " + ((submitted && !password) ? "is-invalid" : "")} placeholder="Password" onChange={this.onChange} />
-                  {submitted && !password && (
-                  <span id="email-error" className="error invalid-feedback" >Password id is Required</span>
-                  )}
-                  <div class="input-group-append">
-                    <div class="input-group-text">
-                      <span class="fas fa-lock"></span>
-                    </div>
-                  </div>
+                  <Input
+                  type="password"
+                  className="form-control"
+                  name="password"
+                  value={this.state.password}
+                  onChange={this.onChangePassword}
+                  validations={[required]}
+                  />
                 </div>
+
                 <div class="row">
                   <div class="col-8">
                     <div class="icheck-primary">
@@ -109,7 +130,7 @@ class Login extends React.Component {
                     </div>
                   </div>
                   <div class="col-4">
-                  <button 
+                  {/* <button 
                     onClick={(e) => { 
                       console.log(e);
                     e.currentTarget.blur();
@@ -118,36 +139,50 @@ class Login extends React.Component {
                   class="btn btn-primary btn-block"
                   >
                   Sign In
-                  </button>
-                    {/* <button type="submit" class="btn btn-primary btn-block">Sign In</button> */}
+                  </button> */}
                   </div>
                 </div>
-              {/* </form> */}
 
-              {/* <div class="social-auth-links text-center mb-3">
-                <p>- OR -</p>
-                <a href="#" class="btn btn-block btn-primary">
-                  <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
-                </a>
-                <a href="#" class="btn btn-block btn-danger">
-                  <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
-                </a>
-              </div>
-
-
-              <p class="mb-1">
-                <a href="forgot-password.html">I forgot my password</a>
-              </p>
-              <p class="mb-0">
-                <a href="register.html" class="text-center">Register a new membership</a>
-              </p> */}
-            </div>
+                <div className="form-group">
+                  <button
+                    className="btn btn-primary btn-block"
+                    disabled={this.state.loading}
+                  >
+                  {this.state.loading && (
+                    <span className="spinner-border spinner-border-sm"></span>
+                  )}
+                  <span>Login</span>
+                  </button>
+                </div>
+                {message && (
+                <div className="form-group">
+                  <div className="alert alert-danger" role="alert">
+                    {message}
+                  </div>
+                </div>
+              )}
+              <CheckButton
+              style={{ display: "none" }}
+              ref={(c) => {
+                this.checkBtn = c;
+              }}
+              />
+            </Form>
           </div>
         </div>
-        </body>
-      );
-	}
+      </div>
+    </body>
+    );
+  }
 }
 
+function mapStateToProps(state) {
+  const { isLoggedIn } = state.auth || {};
+  const { message } = state.message || {};
+  return {
+    isLoggedIn,
+    message
+  };
+}
 
-export default Login;
+export default connect(mapStateToProps)(Login);
