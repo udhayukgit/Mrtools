@@ -41,21 +41,48 @@ const FieldLevelValidationForm = (props) => {
       setShow(true)
   }
 
+  const config = {
+    headers: {
+       'Access-Control-Allow-Origin': '*'
+    }
+ };
+
+//  useEffect(() => {
+//   if(!props.fetched) {
+//       props.fetchRules();
+//   }
+//   console.log('mount it!');
+// }, []); // passing an empty array as second argument triggers the callback in useEffect only after the initial render thus replicating `componentDidMount` lifecycle behaviour
+
+  function getCategories() {
+		axios.get('http://localhost:8000/product',config).then((
+      
+            response 
+        ) => {
+            this.setState({
+              product_id: response.data[0].id,
+              categories: [...response.data]
+            })
+            console.log(response);
+        })
+	}
+
   function handleSubmit(e) {
+    getCategories()
       
     e.preventDefault()
-    setLoading(true)
-    axios.post('/api/register', {
-        product_name:productName,
+    // setLoading(true)
+    // axios.post('/api/register', {
+    //     product_name:productName,
         
-    }).then(result => {
-        localStorage.setItem('token', result.data.token)
-        // props.addUser(result.data.user)
-    }).catch(err => {
-        setErrorKeys(Object.keys(JSON.parse(err.response.data)))
-        setError(JSON.parse(err.response.data))
-        setLoading(false)
-    })
+    // }).then(result => {
+    //     localStorage.setItem('token', result.data.token)
+    //     // props.addUser(result.data.user)
+    // }).catch(err => {
+    //     setErrorKeys(Object.keys(JSON.parse(err.response.data)))
+    //     setError(JSON.parse(err.response.data))
+    //     setLoading(false)
+    // })
   }
 
   const {pristine, reset, submitting } = props

@@ -10,9 +10,9 @@ import Product from "../modules/Product/product";
 class CommonLayout extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isLoggedIn: true
-    };
+    // this.state = {
+    //   isLoggedIn: true
+    // };
   }
 
   render() {
