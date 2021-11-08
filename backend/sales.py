@@ -9,9 +9,10 @@ import os,time
 from werkzeug.utils import secure_filename
 
 from models import Sales
-
+from usermanagement import token_required
 
 class Sales(Resource):
+  @token_required
   def get(self):
     """Get the sales details for using this function
 
@@ -42,7 +43,8 @@ class Sales(Resource):
         return jsonify({'error': 'data not found'})
     else:
         return jsonify([u.to_json() for u in getsales.items])
-
+  
+  @token_required
   def post(self):
 
     """Create the sales for using this function
@@ -55,7 +57,7 @@ class Sales(Resource):
 
     sales_flag , email_flag = False , False
     
-    sales = request.form #sales form
+    sales = request.get_json() #sales form
     
     productname_exist = Sales.objects(productname=sales['productname']).first()
 
@@ -77,7 +79,7 @@ class Sales(Resource):
 
     return jsonify({'status': 'success','messgage':'sales created Successfully!.'})
 
-
+  @token_required
   def put(self):
 
     """Update the sales for using this function
@@ -88,7 +90,7 @@ class Sales(Resource):
         a status of function return json format
     """
 
-    sales = request.form
+    sales = request.get_json()
 
     if 'id' not in sales:
         return jsonify({'error':"Id is must to Edit the data!."})
@@ -105,7 +107,7 @@ class Sales(Resource):
 
     return jsonify({'status': 'success','messgage':'sales data Updated Successfully!.'})
 
-
+  @token_required
   def delete(self):
     """Deleting the sales for using this function
 
@@ -116,7 +118,7 @@ class Sales(Resource):
     """
 
     
-    sales = request.form
+    sales = request.get_json()
 
     if 'id' not in sales:
         return jsonify({'error':"productname is Must to Delete the data!."})

@@ -7,11 +7,13 @@ import datetime
 import json
 import os,time
 from werkzeug.utils import secure_filename
-from requests import put, get
 from models import Product
+
+from usermanagement import token_required
 
 
 class ProductManagement(Resource):
+  @token_required
   def get(self):
     """Get the product details for using this function
 
@@ -42,6 +44,8 @@ class ProductManagement(Resource):
     else:
         return jsonify([u.to_json() for u in products.items])
 
+
+  @token_required
   def post(self):
 
     """Create the product for using this function
@@ -54,7 +58,7 @@ class ProductManagement(Resource):
 
     product_flag , email_flag = False , False
     
-    product = request.form #product form
+    product = request.get_json() #product form
     
     productname_exist = Product.objects(productname=product['productname']).first()
 
@@ -72,7 +76,7 @@ class ProductManagement(Resource):
 
     return jsonify({'status': 'success','messgage':'product created Successfully!.'})
 
-
+  @token_required
   def put(self):
 
     """Update the product for using this function
@@ -83,7 +87,7 @@ class ProductManagement(Resource):
         a status of function return json format
     """
 
-    product = request.form
+    product = request.get_json()
 
     if 'id' not in product:
         return jsonify({'error':"Id is must to Edit the data!."})
@@ -100,7 +104,7 @@ class ProductManagement(Resource):
 
     return jsonify({'status': 'success','messgage':'product data Updated Successfully!.'})
 
-
+  @token_required
   def delete(self):
     """Deleting the product for using this function
 
@@ -111,7 +115,7 @@ class ProductManagement(Resource):
     """
 
 
-    product = request.form
+    product = request.get_json()
 
     if 'id' not in product:
         return jsonify({'error':"Id is Must to Delete the data!."})

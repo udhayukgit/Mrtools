@@ -1,6 +1,8 @@
 
 from flask import Flask, request, jsonify , flash,redirect 
 from flask_mongoengine import MongoEngine
+import jwt
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -13,3 +15,4 @@ def DBconfig():
     db = MongoEngine(app)
 
     return db
+

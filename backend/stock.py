@@ -9,9 +9,12 @@ import os,time
 from werkzeug.utils import secure_filename
 
 from models import Stock
+from usermanagement import token_required
+
 
 
 class Stock(Resource):
+  @token_required
   def get(self):
     """Get the stock details for using this function
 
@@ -42,6 +45,7 @@ class Stock(Resource):
     else:
         return jsonify([u.to_json() for u in stocks.items])
 
+  @token_required
   def post(self):
 
     """Create the stock for using this function
@@ -54,7 +58,7 @@ class Stock(Resource):
 
     stock_flag , email_flag = False , False
     
-    stock = request.form #stock form
+    stock = request.get_json() #stock form
     
     productname_exist = Stock.objects(productname=stock['productname']).first()
 
@@ -75,7 +79,7 @@ class Stock(Resource):
 
     return jsonify({'status': 'success','messgage':'stock created Successfully!.'})
 
-
+  @token_required
   def put(self):
 
     """Update the stock for using this function
@@ -86,7 +90,7 @@ class Stock(Resource):
         a status of function return json format
     """
     
-    stock = request.form
+    stock = request.get_json()
     
     if 'id' not in stock:
         return jsonify({'error':"productname is must to Edit the data!."})
@@ -103,7 +107,7 @@ class Stock(Resource):
     
     return jsonify({'status': 'success','messgage':'stock data Updated Successfully!.'})
 
-
+  @token_required
   def delete(self):
     """Deleting the stock for using this function
 
@@ -114,7 +118,7 @@ class Stock(Resource):
     """
 
     
-    stock = request.form
+    stock = request.get_json()
 
     if 'id' not in stock:
         return jsonify({'error':"productname is Must to Delete the data!."})

@@ -9,9 +9,10 @@ import os,time
 from werkzeug.utils import secure_filename
 from requests import put, get
 from models import Expense
-
+from usermanagement import token_required
 
 class Expenses(Resource):
+  @token_required
   def get(self):
     """Get the expense details for using this function
 
@@ -41,7 +42,8 @@ class Expenses(Resource):
         return jsonify({'error': 'data not found'})
     else:
         return jsonify([u.to_json() for u in expenses.items])
-
+  
+  @token_required
   def post(self):
 
     """Create the expense for using this function
@@ -54,7 +56,7 @@ class Expenses(Resource):
 
     expense_flag , email_flag = False , False
     
-    expense = request.form #expense form
+    expense = request.get_json() #expense form
     
     expensename_exist = Expense.objects(expensename=expense['expensename']).first()
 
@@ -74,7 +76,7 @@ class Expenses(Resource):
 
     return jsonify({'status': 'success','messgage':'expense created Successfully!.'})
 
-
+  @token_required
   def put(self):
 
     """Update the expense for using this function
@@ -85,7 +87,7 @@ class Expenses(Resource):
         a status of function return json format
     """
 
-    expense = request.form
+    expense = request.get_json()
 
     if 'id' not in expense:
         return jsonify({'error':"Id is must to Edit the data!."})
@@ -102,7 +104,7 @@ class Expenses(Resource):
 
     return jsonify({'status': 'success','messgage':'expense data Updated Successfully!.'})
 
-
+  @token_required
   def delete(self):
     """Deleting the expense for using this function
 
@@ -113,7 +115,7 @@ class Expenses(Resource):
     """
 
 
-    expense = request.form
+    expense = request.get_json()
 
     if 'id' not in expense:
         return jsonify({'error':"Id is Must to Delete the data!."})
